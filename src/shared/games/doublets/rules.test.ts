@@ -12,7 +12,7 @@ import {
   sanitizeSettings,
   validateMove,
 } from "./rules.js";
-import { DEFAULT_SETTINGS, type WordChainState } from "./types.js";
+import { DEFAULT_SETTINGS, type DoubletsState } from "./types.js";
 
 const WORDS = parseWordList(["cold", "cord", "card", "ward", "word", "wore", "core", "bold", "bolt", "zzzz"].join("\n"));
 const settings = { ...DEFAULT_SETTINGS, wordLength: 4 };
@@ -22,11 +22,11 @@ const players = [
   { id: "c", name: "Cy" },
 ];
 
-function newGame(startWord = "cold", ps = players): WordChainState {
+function newGame(startWord = "cold", ps = players): DoubletsState {
   return createGame(ps, settings, startWord);
 }
 
-function play(state: WordChainState, playerId: string, word: string): WordChainState {
+function play(state: DoubletsState, playerId: string, word: string): DoubletsState {
   const result = applyMove(state, playerId, word, WORDS);
   if (!result.ok) throw new Error(`Expected ${word} to be valid, got ${result.error}`);
   return result.state;

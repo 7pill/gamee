@@ -1,19 +1,18 @@
-/** Every game in the hub. The main menu is built from this list. */
-export interface GameDefinition {
-  id: string;
-  name: string;
-  description: string;
-  minPlayers: number;
-  maxPlayers: number;
-}
+import { MAX_PLAYERS, MIN_PLAYERS } from "../../shared/games/doublets/types";
+import { DoubletsBoard } from "./doublets/DoubletsBoard";
+import { DoubletsSettingsForm } from "./doublets/DoubletsSettingsForm";
+import type { GameDefinition } from "./types";
 
+/** Every game in the hub. The main menu is built from this list. */
 export const games: GameDefinition[] = [
   {
-    id: "word-chain",
-    name: "Word Chain",
+    id: "doublets",
+    name: "Doublets",
     description: "Change one letter at a time to make a new word. No repeats. Last player standing wins.",
-    minPlayers: 2,
-    maxPlayers: 6,
+    minPlayers: MIN_PLAYERS,
+    maxPlayers: MAX_PLAYERS,
+    SettingsForm: DoubletsSettingsForm,
+    Board: DoubletsBoard,
   },
 ];
 

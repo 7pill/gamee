@@ -1,7 +1,7 @@
 services:
   app:
     build: .
-    image: word-games:latest
+    image: gamee:latest
     ports:
       - "${HOST_PORT:-3000}:3000"
     restart: unless-stopped

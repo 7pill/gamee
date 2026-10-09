@@ -8,14 +8,14 @@ export const MAX_PLAYERS = 6;
 /** "timed": lose when your turn timer runs out or you surrender. "unlimited": lose only by surrendering. */
 export type GameMode = "timed" | "unlimited";
 
-export interface WordChainSettings {
+export interface DoubletsSettings {
   wordLength: number;
   mode: GameMode;
   /** Seconds per turn. Only used in "timed" mode. */
   turnSeconds: number;
 }
 
-export const DEFAULT_SETTINGS: WordChainSettings = {
+export const DEFAULT_SETTINGS: DoubletsSettings = {
   wordLength: 4,
   mode: "timed",
   turnSeconds: 30,
@@ -25,10 +25,8 @@ export type EliminationReason = "timeout" | "surrender" | "disconnect";
 /** "stuck": the last word played left no valid moves, so the player who played it wins. */
 export type EndReason = EliminationReason | "stuck";
 
-export interface PlayerInfo {
-  id: string;
-  name: string;
-}
+export type { PlayerInfo } from "../../protocol.js";
+import type { PlayerInfo } from "../../protocol.js";
 
 export interface PlayerState extends PlayerInfo {
   alive: boolean;
@@ -41,8 +39,8 @@ export interface Play {
   playerId: string | null;
 }
 
-export interface WordChainState {
-  settings: WordChainSettings;
+export interface DoubletsState {
+  settings: DoubletsSettings;
   players: PlayerState[];
   /** Every word played so far, starting with the start word. The last entry is the current word. */
   history: Play[];
@@ -52,6 +50,14 @@ export interface WordChainState {
   winnerId: string | null;
   endReason: EndReason | null;
 }
+
+/** What clients see: the game state plus when the current turn runs out. */
+export interface DoubletsView extends DoubletsState {
+  /** Server time (ms since epoch) when the current turn ends; null in unlimited mode or after the game. */
+  turnDeadline: number | null;
+}
+
+export type DoubletsAction = { type: "move"; word: string } | { type: "surrender" };
 
 export type MoveError =
   | "game-over"

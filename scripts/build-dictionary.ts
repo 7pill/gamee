@@ -7,8 +7,8 @@
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { neighbors, parseWordList } from "../src/shared/games/word-chain/dictionary.js";
-import { MAX_WORD_LENGTH, MIN_WORD_LENGTH } from "../src/shared/games/word-chain/types.js";
+import { neighbors, parseWordList } from "../src/shared/games/doublets/dictionary.js";
+import { MAX_WORD_LENGTH, MIN_WORD_LENGTH } from "../src/shared/games/doublets/types.js";
 
 const SOURCES = {
   // ENABLE: public-domain word list used by many word games.

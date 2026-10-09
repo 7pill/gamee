@@ -1,5 +1,5 @@
 {
-  // Client + shared code (bundled by Vite), scripts and tests.
+  // Type-checks everything (client, server, shared, scripts, tests). The server build uses tsconfig.server.json.
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
@@ -15,5 +15,5 @@
     "types": ["vite/client", "node"],
     "noEmit": true
   },
-  "include": ["src/client", "src/shared", "scripts", "vite.config.ts"]
+  "include": ["src", "scripts", "vite.config.ts"]
 }

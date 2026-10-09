@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { parseWordList, type WordSet } from "../shared/games/word-chain/dictionary.js";
-import { MAX_WORD_LENGTH, MIN_WORD_LENGTH } from "../shared/games/word-chain/types.js";
+import { parseWordList, type WordSet } from "../shared/games/doublets/dictionary.js";
+import { MAX_WORD_LENGTH, MIN_WORD_LENGTH } from "../shared/games/doublets/types.js";
 
 export interface Dictionary {
   /** All valid words, by word length. */

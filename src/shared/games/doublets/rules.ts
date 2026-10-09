@@ -11,8 +11,8 @@ import {
   type MoveError,
   type PlayerInfo,
   type PlayerState,
-  type WordChainSettings,
-  type WordChainState,
+  type DoubletsSettings,
+  type DoubletsState,
 } from "./types.js";
 
 // All functions here are pure: they never mutate their input and return new state.
@@ -29,7 +29,7 @@ export function countDifferences(a: string, b: string): number {
 }
 
 /** Turns untrusted input (e.g. from a client) into valid settings, falling back to defaults. */
-export function sanitizeSettings(input: unknown): WordChainSettings {
+export function sanitizeSettings(input: unknown): DoubletsSettings {
   const raw = (typeof input === "object" && input !== null ? input : {}) as Record<string, unknown>;
   return {
     wordLength: clampInt(raw.wordLength, MIN_WORD_LENGTH, MAX_WORD_LENGTH, DEFAULT_SETTINGS.wordLength),
@@ -50,9 +50,9 @@ export function pickStartWord(startWords: readonly string[], random: () => numbe
 
 export function createGame(
   players: readonly PlayerInfo[],
-  settings: WordChainSettings,
+  settings: DoubletsSettings,
   startWord: string,
-): WordChainState {
+): DoubletsState {
   if (players.length < MIN_PLAYERS || players.length > MAX_PLAYERS) {
     throw new Error(`A game needs ${MIN_PLAYERS}-${MAX_PLAYERS} players`);
   }
@@ -70,20 +70,20 @@ export function createGame(
   };
 }
 
-export function currentWord(state: WordChainState): string {
+export function currentWord(state: DoubletsState): string {
   return state.history[state.history.length - 1].word;
 }
 
-export function currentPlayer(state: WordChainState): PlayerState {
+export function currentPlayer(state: DoubletsState): PlayerState {
   return state.players[state.turn];
 }
 
-export function usedWords(state: WordChainState): Set<string> {
+export function usedWords(state: DoubletsState): Set<string> {
   return new Set(state.history.map((p) => p.word));
 }
 
 /** Valid words the current player could play right now. */
-export function availableMoves(state: WordChainState, words: WordSet): string[] {
+export function availableMoves(state: DoubletsState, words: WordSet): string[] {
   const used = usedWords(state);
   return neighbors(currentWord(state), words).filter((w) => !used.has(w));
 }
@@ -91,7 +91,7 @@ export function availableMoves(state: WordChainState, words: WordSet): string[] 
 export type MoveCheck = { ok: true; word: string } | { ok: false; error: MoveError };
 
 export function validateMove(
-  state: WordChainState,
+  state: DoubletsState,
   playerId: string,
   input: string,
   words: WordSet,
@@ -108,14 +108,14 @@ export function validateMove(
   return { ok: true, word };
 }
 
-export type MoveResult = { ok: true; state: WordChainState } | { ok: false; error: MoveError };
+export type MoveResult = { ok: true; state: DoubletsState } | { ok: false; error: MoveError };
 
 /**
  * Plays a word for the current player. If the new word leaves no valid moves,
  * the game ends and the player who played it wins ("stuck").
  */
 export function applyMove(
-  state: WordChainState,
+  state: DoubletsState,
   playerId: string,
   input: string,
   words: WordSet,
@@ -123,7 +123,7 @@ export function applyMove(
   const check = validateMove(state, playerId, input, words);
   if (!check.ok) return check;
 
-  const next: WordChainState = {
+  const next: DoubletsState = {
     ...state,
     history: [...state.history, { word: check.word, playerId }],
     turn: nextAliveIndex(state.players, state.turn),
@@ -139,10 +139,10 @@ export function applyMove(
  * When only one player is left, they win.
  */
 export function eliminatePlayer(
-  state: WordChainState,
+  state: DoubletsState,
   playerId: string,
   reason: EliminationReason,
-): WordChainState {
+): DoubletsState {
   if (state.status !== "playing") return state;
   const index = state.players.findIndex((p) => p.id === playerId);
   if (index === -1 || !state.players[index].alive) return state;
